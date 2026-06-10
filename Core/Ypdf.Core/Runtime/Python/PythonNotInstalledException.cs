@@ -25,6 +25,6 @@ public class PythonNotInstalledException : Exception
 
     private static string GetDefaultMessage()
     {
-        return "Python isn't installed.";
+        return "Python is not installed.";
     }
 }

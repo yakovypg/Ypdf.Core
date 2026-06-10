@@ -28,7 +28,7 @@ public static class PageCutter
 
             default:
                 throw new NotSupportedException(
-                    $"Page division orientation {division.Orientation} isn't supported.");
+                    $"Page division orientation {division.Orientation} is not supported.");
         }
     }
 
@@ -79,7 +79,7 @@ public static class PageCutter
                 break;
 
             default:
-                throw new NotSupportedException($"Page part {pagePart} isn't supported.");
+                throw new NotSupportedException($"Page part {pagePart} is not supported.");
         }
 
         Rectangle newBox = new(newBoxX, newBoxY, newBoxWidth, newBoxHeight);

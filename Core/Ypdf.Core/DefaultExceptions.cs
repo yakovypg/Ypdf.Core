@@ -207,7 +207,7 @@ internal static class DefaultExceptions
 
     private static void ThrowItemNotAllowed<T>(T item, string? paramName)
     {
-        string message = $"{paramName} ('{item}') isn't allowed.";
+        string message = $"{paramName} ('{item}') is not allowed.";
         throw new ArgumentOutOfRangeException(paramName, item, message);
     }
 
@@ -219,13 +219,13 @@ internal static class DefaultExceptions
 
     private static void ThrowFileNotExists(string? path, string? paramName)
     {
-        string message = $"{paramName} ('{path}') doesn't exists.";
+        string message = $"{paramName} ('{path}') does not exists.";
         throw new FileNotFoundException(message);
     }
 
     private static void ThrowDirectoryNotExists(string? path, string? paramName)
     {
-        string message = $"{paramName} ('{path}') doesn't exists.";
+        string message = $"{paramName} ('{path}') does not exists.";
         throw new DirectoryNotFoundException(message);
     }
 }

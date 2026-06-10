@@ -84,7 +84,7 @@ internal sealed class ExtendedArgumentException : ArgumentException
             throw new ArgumentNullException(paramName);
 
         if (argument is not string str)
-            throw new NotSupportedException($"Type {typeof(T)} isn't supported.");
+            throw new NotSupportedException($"Type {typeof(T)} is not supported.");
 
         if (string.IsNullOrWhiteSpace(str))
         {
