@@ -83,7 +83,7 @@ public class CheckCompressionCapabilityTool : ICheckingTool
         ExtendedArgumentNullException.ThrowIfNull(uniqueDirectory, nameof(uniqueDirectory));
         DefaultExceptions.ThrowIfFileNotExists(inputPath, nameof(inputPath));
 
-        var pdfToImageTool = new PdfToImageTool(
+        var pdfToImageTool = new ExtractImagesTool(
             _numberOfImagesToCheckCompressionCapability,
             PythonAlias,
             VirtualEnvironmentPath,

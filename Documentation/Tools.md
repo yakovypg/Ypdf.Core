@@ -20,8 +20,8 @@ Here you can see instructions for working with tools.
 - [RemoveWatermarkAnnotationTool](/Core/Ypdf.Core/Tools/RemoveWatermarkAnnotationTool.cs): Remove watermark from PDF document
 - [ImageToPdfTool](/Core/Ypdf.Core/Tools/ImageToPdfTool.cs): Convert images to PDF document
 - [TextToPdfTool](/Core/Ypdf.Core/Tools/TextToPdfTool.cs): Convert text to PDF document
-- [PdfToImageTool](/Core/Ypdf.Core/Tools/PdfToImageTool.cs): Extract images from PDF document
-- [PdfToTextTool](/Core/Ypdf.Core/Tools/PdfToTextTool.cs), [PdfToTextSimpleTool](/Core/Ypdf.Core/Tools/PdfToTextSimpleTool.cs): Extract text from PDF document
+- [ExtractImagesTool](/Core/Ypdf.Core/Tools/ExtractImagesTool.cs): Extract images from PDF document
+- [ExtractTextTool](/Core/Ypdf.Core/Tools/ExtractTextTool.cs), [ExtractTextSimpleTool](/Core/Ypdf.Core/Tools/ExtractTextSimpleTool.cs): Extract text from PDF document
 - [SetPasswordTool](/Core/Ypdf.Core/Tools/SetPasswordTool.cs): Set password to PDF document
 - [RemovePasswordTool](/Core/Ypdf.Core/Tools/RemovePasswordTool.cs): Remove password from PDF document
 - [CompressImageTool](/Core/Ypdf.Core/Tools/CompressImageTool.cs): Compress images

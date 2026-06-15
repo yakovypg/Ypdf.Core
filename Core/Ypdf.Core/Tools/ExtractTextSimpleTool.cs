@@ -5,9 +5,9 @@ using Ypdf.Core.Extraction;
 
 namespace Ypdf.Core.Tools;
 
-public class PdfToTextSimpleTool : ITool
+public class ExtractTextSimpleTool : ITool
 {
-    public PdfToTextSimpleTool(ITextExtractor textExtractor)
+    public ExtractTextSimpleTool(ITextExtractor textExtractor)
     {
         ExtendedArgumentNullException.ThrowIfNull(textExtractor, nameof(textExtractor));
         TextExtractor = textExtractor;

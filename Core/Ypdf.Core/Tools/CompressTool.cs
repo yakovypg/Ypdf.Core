@@ -166,7 +166,7 @@ public class CompressTool : ITool
         ExtendedArgumentNullException.ThrowIfNull(uniqueDirectory, nameof(uniqueDirectory));
         DefaultExceptions.ThrowIfFileNotExists(inputPath, nameof(inputPath));
 
-        var pdfToImageTool = new PdfToImageTool(0, PythonAlias, VirtualEnvironmentPath, OutputWriter);
+        var pdfToImageTool = new ExtractImagesTool(0, PythonAlias, VirtualEnvironmentPath, OutputWriter);
         pdfToImageTool.Execute(inputPath, uniqueDirectory.FullName);
 
         IEnumerable<string> extractedImagePaths = uniqueDirectory

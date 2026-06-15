@@ -6,23 +6,17 @@ using Ypdf.Core.Runtime.Python;
 
 namespace Ypdf.Core.Tools;
 
-public class PdfToImageTool : PythonTool, IMultipleOutputTool
+public class ExtractTextTool : PythonTool, ITool
 {
-    public PdfToImageTool(
-        int extractedImagesLimit = 0,
+    public ExtractTextTool(
         string? pythonAlias = null,
         string? virtualEnvironmentPath = null,
         IOutputWriter? outputWriter = null)
-        : base(pythonAlias, virtualEnvironmentPath, outputWriter)
-    {
-        ExtractedImagesLimit = extractedImagesLimit;
-    }
-
-    protected int ExtractedImagesLimit { get; init; }
+        : base(pythonAlias, virtualEnvironmentPath, outputWriter) { }
 
     protected override IEnumerable<PythonPackage> VirtualEnvironmentPackages =>
     [
-        new("PyMuPDF", "1.27.2.2")
+        new("tika", "3.1.0")
     ];
 
     public override void Execute(string inputPath, string outputPath)
@@ -30,15 +24,13 @@ public class PdfToImageTool : PythonTool, IMultipleOutputTool
         ExtendedArgumentException.ThrowIfNullOrWhiteSpace(inputPath, nameof(inputPath));
         ExtendedArgumentException.ThrowIfNullOrWhiteSpace(outputPath, nameof(outputPath));
         DefaultExceptions.ThrowIfFileNotExists(inputPath, nameof(inputPath));
-        DefaultExceptions.ThrowIfDirectoryNotExists(outputPath, nameof(outputPath));
 
         inputPath = inputPath.Quoted();
         outputPath = outputPath.Quoted();
 
-        string imageExtractorPath = PythonScriptPaths.ImageExtractor.Quoted();
-        string args = $"{imageExtractorPath} -i {inputPath} -o {outputPath} -l {ExtractedImagesLimit}";
+        string textExtractorPath = PythonScriptPaths.TextExtractor.Quoted();
+        string args = $"{textExtractorPath} -i {inputPath} -o {outputPath}";
 
-        PythonExecutor executor = CreateDefaultPythonExecutor();
-        executor.Execute(args);
+        ExecutePython(args);
     }
 }

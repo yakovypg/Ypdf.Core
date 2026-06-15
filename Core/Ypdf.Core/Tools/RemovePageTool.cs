@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using iText.Kernel.Pdf;
@@ -8,8 +9,10 @@ namespace Ypdf.Core.Tools;
 
 public class RemovePageTool : ITool
 {
-    public RemovePageTool(IEnumerable<PageRange> pageRanges)
-        : this(PageRange.GetAllItems(pageRanges)) { }
+    public RemovePageTool(IEnumerable<PageRange> pages)
+        : this(
+            PageRange.GetAllItems(pages ?? throw new ArgumentNullException(nameof(pages))))
+    { }
 
     public RemovePageTool(IEnumerable<int> pages)
     {

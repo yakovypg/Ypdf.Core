@@ -62,12 +62,8 @@ public class CompressImageTool : PythonTool, IMultipleInputTool, IMultipleOutput
         ExtendedArgumentNullException.ThrowIfNull(inputPaths, nameof(inputPaths));
         DefaultExceptions.ThrowIfContainsNotExistingFile(inputPaths, nameof(inputPaths));
 
-        if (string.IsNullOrWhiteSpace(outputPath))
-            outputPath = "\"\"";
-        else
-            outputPath = outputPath.Quoted();
-
         inputPaths = inputPaths.Select(t => t.Quoted());
+        outputPath = outputPath.Quoted();
 
         string imageCompressorPath = PythonScriptPaths.ImageCompressor.Quoted();
         string inputPathsString = string.Join(" ", inputPaths);
