@@ -9,10 +9,16 @@ namespace Ypdf.Core.Tools;
 public class ExtractTextTool : PythonTool, ITool
 {
     public ExtractTextTool(
+        string? tikaServerJarPath = null,
         string? pythonAlias = null,
         string? virtualEnvironmentPath = null,
         IOutputWriter? outputWriter = null)
-        : base(pythonAlias, virtualEnvironmentPath, outputWriter) { }
+        : base(pythonAlias, virtualEnvironmentPath, outputWriter)
+    {
+        TikaServerJarPath = tikaServerJarPath;
+    }
+
+    protected string? TikaServerJarPath { get; init; }
 
     protected override IEnumerable<PythonPackage> VirtualEnvironmentPackages =>
     [
@@ -30,6 +36,12 @@ public class ExtractTextTool : PythonTool, ITool
 
         string textExtractorPath = PythonScriptPaths.TextExtractor.Quoted();
         string args = $"{textExtractorPath} -i {inputPath} -o {outputPath}";
+
+        if (!string.IsNullOrWhiteSpace(TikaServerJarPath))
+        {
+            string tikaServerJarPathQuoted = TikaServerJarPath!.Quoted();
+            args += $" -j {tikaServerJarPathQuoted}";
+        }
 
         ExecutePython(args);
     }

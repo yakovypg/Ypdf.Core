@@ -1,15 +1,30 @@
 # pip install tika==3.1.0
+# Java 11+ required
 
+import os
 import sys
 import argparse
 
-from tika import parser
-from Utils import setup_logger, print_exception, make_path_unique
+from Utils import setup_logger, print_exception
 
 TOOL_NAME = "TextExtractor"
 logger = setup_logger(TOOL_NAME)
 
-def extract_text(input_path: str, output_path: str) -> None:
+def extract_text(input_path: str, output_path: str, tika_server_jar_path: str = None) -> None:
+    if tika_server_jar_path:
+        tika_server_jar_checksum_path = f"{tika_server_jar_path}.md5"
+
+        if not os.path.isfile(tika_server_jar_path):
+            raise FileNotFoundError(f"Tika server jar not found: {tika_server_jar_path}")
+
+        if not os.path.isfile(tika_server_jar_checksum_path):
+            raise FileNotFoundError(f"Tika server jar checksum not found: {tika_server_jar_checksum_path}")
+
+        os.environ["TIKA_SERVER_JAR"] = tika_server_jar_path
+        os.environ["TIKA_PATH"] = tika_server_jar_checksum_path
+
+    from tika import parser
+
     parsed_file = parser.from_file(input_path)
     content = parsed_file.get("content") or ""
 
@@ -36,6 +51,13 @@ def create_parser() -> argparse.ArgumentParser:
         type=str,
         required=True)
 
+    parser.add_argument(
+        "-j",
+        "--tika-jar",
+        help="path to the tika server .jar file",
+        type=str,
+        default=None)
+
     return parser
 
 def main() -> int:
@@ -43,7 +65,7 @@ def main() -> int:
     args = parser.parse_args()
 
     try:
-        extract_text(args.input_path, args.output_path)
+        extract_text(args.input_path, args.output_path, args.tika_jar)
         return 0
     except Exception:
         print_exception(logger)
