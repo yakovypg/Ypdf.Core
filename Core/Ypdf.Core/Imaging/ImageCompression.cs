@@ -71,7 +71,7 @@ public readonly struct ImageCompression : IEquatable<ImageCompression>
     public readonly float SizeFactor { get; }
     public readonly int? NewWidth { get; }
     public readonly int? NewHeight { get; }
-    public readonly string? Extension { get; }
+    public readonly string Extension { get; }
 
     public static bool operator ==(ImageCompression left, ImageCompression right)
     {
