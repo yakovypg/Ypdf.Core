@@ -1,86 +1,107 @@
-# pip install PyMuPDF==1.27.2.2 tqdm==4.67.3
+# pip install PyMuPDF==1.27.2.2
 
 import os
 import sys
 import fitz
 import argparse
 
-from tqdm import tqdm
+from Utils import setup_logger, print_exception, make_path_unique
 
-def print_error() -> None:
-    exceprion_info = sys.exc_info()
-    message = exceprion_info[1]
-    print(message)
+TOOL_NAME = "ImageExtractor"
+logger = setup_logger(TOOL_NAME)
 
-def make_path_unique(path: str) -> str:
-    name, extension = os.path.splitext(path)
-    unique_path = path
-    counter = 1
+def extract_images(pdf_path: str, output_directory: str, imgs_count_limit: int = 0) -> None:
+    output_directory = output_directory or "."
+    limit = imgs_count_limit if imgs_count_limit and imgs_count_limit > 0 else None
 
-    while os.path.isfile(unique_path):
-        unique_path = "%s (%s)%s" % (name, counter, extension)
-        counter += 1
+    try:
+        file_basename = os.path.basename(pdf_path)
+        file_name = os.path.splitext(file_basename)[0]
 
-    return unique_path
+        img_num = 0
 
-def extract_images(
-        output_directory: str,
-        pdf_paths: str,
-        imgs_count_limit: int = -1) -> None:
-    for path in pdf_paths:
-        try:
-            file_basename = os.path.basename(path)
-            file_name = os.path.splitext(file_basename)[0] or os.path.splitext(file_basename)[1]
+        with fitz.open(pdf_path) as doc:
+            total_pages = len(doc)
 
-            img_num = 1
-            pdf_document = fitz.Document(path)
+            for page_index in range(total_pages):
+                page_number = page_index + 1
+                logger.debug(f"Processing {file_basename}: page {page_number}/{total_pages}")
 
-            for page_num in tqdm(range(len(pdf_document)), desc="pages"):
-                for page_img in tqdm(pdf_document.get_page_images(page_num), desc="page_images"):
-                    img_ref = page_img[0]
-                    pdf_document.extract_image(img_ref)
-                    pixmap = fitz.Pixmap(pdf_document, img_ref)
+                page = doc.load_page(page_index)
+                image_list = page.get_images(full=True)
 
-                    img_extension = ".png"
-                    img_name = "%s_p%s_r%s_n%s%s" % (file_name, page_num, img_ref, img_num, img_extension)
-                    img_path = make_path_unique(os.path.join(output_directory, img_name))
+                if not image_list:
+                    logger.debug(f"No images on page {page_number} of {file_basename}")
+                    continue
 
-                    pixmap.save(img_path)
+                for img_info in image_list:
+                    xref = img_info[0]
 
-                    if img_num == imgs_count_limit:
-                        break
+                    try:
+                        base_image = doc.extract_image(xref)
+                        image_bytes = base_image["image"]
+                        img_ext = base_image.get("ext", "png").lower()
 
-                    img_num += 1
+                        img_num += 1
 
-                if img_num == imgs_count_limit:
-                    break
-        except:
-            print_error()
+                        img_name = f"{file_name}_p{page_number}_r{xref}_n{img_num}.{img_ext}"
+                        img_path = make_path_unique(os.path.join(output_directory, img_name))
 
-if __name__ == "__main__":
+                        with open(img_path, "wb") as img_file:
+                            img_file.write(image_bytes)
+
+                        logger.info(f"Saved: {img_path}")
+
+                        if limit is not None and img_num >= limit:
+                            raise StopIteration
+                    except StopIteration:
+                        raise
+                    except Exception as e:
+                        logger.debug(f"Failed to extract image xref={xref} from {file_basename}: {e}")
+    except StopIteration:
+        logger.info("Image limit reached")
+    except Exception:
+        print_exception(logger)
+
+def create_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="ImageExtractor",
-        description="script for extracting images from PDF document")
+        prog=TOOL_NAME,
+        description="script for extracting embedded images from PDF documents")
 
     parser.add_argument(
         "-i",
-        "--input-documents",
-        nargs='+',
-        help="pdf documents from which images will be extracted",
+        "--input-path",
+        help="path to the PDF document which images will be extracted from",
+        type=str,
         required=True)
 
     parser.add_argument(
         "-o",
         "--output-directory",
         help="path to the directory for saving extracted images",
-        default="")
+        type=str,
+        default=None)
 
     parser.add_argument(
         "-l",
         "--limit",
+        help="maximum number of images to extract (0 = no limit)",
         type=int,
-        help="maximum number of images that can be extracted",
         default=0)
 
+    return parser
+
+def main() -> int:
+    parser = create_parser()
     args = parser.parse_args()
-    extract_images(args.output_directory, args.input_documents, args.limit)
+
+    try:
+        extract_images(args.input_path, args.output_directory, args.limit)
+        return 0
+    except Exception:
+        print_exception(logger)
+        return 1
+
+if __name__ == "__main__":
+    exit_code = main()
+    sys.exit(exit_code)
