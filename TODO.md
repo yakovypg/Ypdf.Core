@@ -3,6 +3,6 @@ This is the TODO file where you can find some features and content that need to 
 
 ## Features
 - [ ] Come up with new features.
-- [ ] Add tool for smart resizing PDF document pages.
-- [ ] Add tool for converting PDF document pages to images.
-- [ ] Add tool for extracting text from the PDF document using OCR.
+- [ ] Add a tool for smartly resizing PDF document pages.
+- [ ] Add a tool for extracting text from PDF documents using OCR.
+- [ ] Add tools for converting between PDF and Office formats.
