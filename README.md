@@ -7,7 +7,7 @@
   <a href="https://github.com/yakovypg/Ypdf.Core/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/License-AGPLv3-darkyellow.svg" alt="license" />
   </a>
-  <img src="https://img.shields.io/badge/Version-1.0.1-red.svg" alt="version" />
+  <img src="https://img.shields.io/badge/Version-1.0.2-red.svg" alt="version" />
   <img src="https://img.shields.io/badge/C%23-12.0-blue" alt="csharp" />
 </p>
 
