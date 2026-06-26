@@ -33,7 +33,13 @@ public abstract class PythonTool : ITool
     protected PythonConfig CreatePythonConfig()
     {
         PythonVirtualEnvironmentConfig? virtualEnvironment = CreatePythonVirtualEnvironmentConfig();
-        return new PythonConfig(PythonAlias, true, virtualEnvironment);
+
+        return new PythonConfig(
+            Alias: PythonAlias,
+            RequirePython3: true,
+            VirtualEnvironment: virtualEnvironment,
+            WritePyCache: false,
+            UseUserSiteDirectory: false);
     }
 
     protected PythonExecutor CreateDefaultPythonExecutor()

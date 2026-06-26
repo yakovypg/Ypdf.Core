@@ -73,10 +73,12 @@ public class PythonExecutor : ProcessExecutor
         if (string.IsNullOrWhiteSpace(pythonToUse))
             _ = PythonDetector.DetectPythonAlias(out pythonToUse);
 
+        string processArgs = AddPythonConfigArgs(args);
+
         var startInfo = new ProcessStartInfo()
         {
             FileName = pythonToUse,
-            Arguments = args,
+            Arguments = processArgs,
             WorkingDirectory = workingDirectory,
             CreateNoWindow = true,
             UseShellExecute = false,
@@ -200,5 +202,27 @@ public class PythonExecutor : ProcessExecutor
         }
 
         OutputWriter?.WriteLine("Required Python packages installed.");
+    }
+
+    private string CreatePythonConfigArgs()
+    {
+        var pythonConfigArgsList = new List<string>();
+
+        if (!PythonConfig.WritePyCache)
+            pythonConfigArgsList.Add("-B");
+
+        if (!PythonConfig.UseUserSiteDirectory)
+            pythonConfigArgsList.Add("-s");
+
+        return string.Join(" ", pythonConfigArgsList);
+    }
+
+    private string AddPythonConfigArgs(string mainArgs)
+    {
+        string pythonConfigArgs = CreatePythonConfigArgs();
+
+        return !string.IsNullOrWhiteSpace(pythonConfigArgs)
+            ? $"{pythonConfigArgs} {mainArgs}"
+            : mainArgs;
     }
 }
